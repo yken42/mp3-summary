@@ -187,10 +187,14 @@ export const Upload = () => {
               <h1 className="text-3xl font-bold text-blue-100 mb-6">Audio Summary</h1>
               <div className="grid w-full max-w-md mx-auto items-center gap-1.5 py-2">
                 <input
-                  id="picture"
+                  id="audio"
                   type="file"
+                  accept="audio/*"
                   className="flex h-10 w-full rounded-lg border-2 border-gray-700/50 bg-gray-800/50 px-3 py-2 text-sm text-blue-100 file:border-0 file:bg-transparent file:text-blue-400 file:text-sm file:font-medium hover:border-blue-500/50 focus:border-blue-500/50 focus:outline-none"
                 />
+                <p className="text-sm text-blue-200/70 mt-1">
+                  Supported formats: MP3, WAV, M4A, OGG, FLAC
+                </p>
               </div>
               <Button 
                 variant="contained" 
