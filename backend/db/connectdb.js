@@ -1,17 +1,15 @@
-import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 import 'dotenv/config';
 
 const uri = process.env.CONNECTION_STRING;
-const client = new MongoClient(uri);
 
 async function connectToDatabase() {
     try {
-        await client.connect();
+        await mongoose.connect(uri);
         console.log("Database connected successfully");
     } catch (error) {
-        console.log(error.stack);
-    } finally {
-        await client.close();
+        console.error("Database connection error:", error);
+        process.exit(1);
     }
 }
 

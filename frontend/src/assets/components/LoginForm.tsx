@@ -12,7 +12,7 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import { useAuthStore } from '../store/authStore';
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
@@ -35,6 +35,7 @@ const itemVariants = {
 };
 
 export const LoginForm = () => {
+  const { setUser } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -51,10 +52,13 @@ export const LoginForm = () => {
       const response = await axios.post('http://localhost:3000/api/auth/login', {
         email,
         password
+      }, {
+        withCredentials: true
       });
 
       if (response.data.success) {
-        navigate('/dashboard');
+        setUser(response.data.user);
+        navigate('/upload');
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'An error occurred during login');

@@ -3,10 +3,13 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NavBar } from './NavBar';
+import { useNavigate } from 'react-router-dom';
 
 const FloatingBulb = ({ index }: { index: number }) => {
   const randomDelay = Math.random() * 2;
   const randomDuration = 3 + Math.random() * 2;
+
+ 
   
   return (
     <motion.div
@@ -35,6 +38,26 @@ export const Upload = () => {
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [bulbs] = useState(() => Array.from({ length: 15 }, (_, i) => i));
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/auth/check-auth', {
+          withCredentials: true
+        });
+        
+        if (!response.data.success) {
+          navigate('/login');
+        }
+      } catch (error: any) {
+        console.error('Auth check failed:', error.message);
+        navigate('/login');
+      }
+    };
+     checkAuth();
+  }, []);
+
 
   const handleSubmit = async (e: any): Promise<void> => {
     e.preventDefault();
@@ -48,14 +71,18 @@ export const Upload = () => {
       const response = await axios.post("http://localhost:3000/api/upload-file", formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        withCredentials: true
       });
       
       console.log('Response:', response.data);
       const cleanedResponse = response.data.response.replace(/\*/g, '').trim();
       setAiResponse(cleanedResponse);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading file:', error);
+      if (error.response?.status === 401) {
+        navigate('/login');
+      }
     } finally {
       setIsLoading(false);
     }

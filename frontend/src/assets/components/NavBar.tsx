@@ -1,7 +1,22 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-
+import { useAuthStore } from '../store/authStore';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 export const NavBar = () => {
+  const { user, setUser } = useAuthStore();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await axios.post('http://localhost:3000/api/auth/logout', {}, {
+        withCredentials: true
+      });
+      setUser(null);
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
     <nav
@@ -52,14 +67,22 @@ export const NavBar = () => {
                 Home
               </Link>
               <Link to="/upload">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-100 px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-blue-500/30"
-              >
-                Get Started
-              </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="hover:cursor-pointer bg-blue-500/20 hover:bg-blue-500/30 text-blue-100 px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-blue-500/30"
+                >
+                  Get Started
+                </motion.button>
               </Link>
+              {user && (
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  Logout
+                </button>
+              )}
             </div>
           </div>
         </div>
