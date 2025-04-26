@@ -5,6 +5,7 @@ import connectToDatabase from './db/connectdb.js';
 import cors from 'cors';
 import 'dotenv/config';
 import authRoutes from './routes/authRoutes.js';
+import path from 'path';
 const app = express();
 const PORT = 3000;
 
@@ -13,7 +14,6 @@ const PORT = 3000;
 const allowedOrigins = [
     'http://localhost:5173',  // Vite dev server
     'http://localhost:4000',  // Docker frontend
-    process.env.FRONTEND_URL
 ].filter(Boolean);  // Remove any undefined values
 
 app.use(cors({

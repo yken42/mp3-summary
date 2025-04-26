@@ -1,5 +1,5 @@
 import User from '../modals/userModal.js';
-import bcryptjs from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 import 'dotenv/config';
@@ -9,7 +9,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 export const registerUser = async (req, res) => {
     const { email, password } = req.body;
     try {
-        const hashedPassword = await bcryptjs.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({ email, password: hashedPassword });
         
         const token = jwt.sign(
@@ -50,7 +50,7 @@ export const loginUser = async (req, res) => {
                 message: "User not found"
             });
         }
-        const isPasswordValid = await bcryptjs.compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(password, user.password);
         if(!isPasswordValid){
             return res.status(400).json({
                 success: false,
