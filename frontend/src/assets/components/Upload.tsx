@@ -77,6 +77,7 @@ export const Upload = () => {
       
       console.log('Response:', response.data);
       const cleanedResponse = response.data.response.replace(/\*/g, '').trim();
+      console.log(cleanedResponse)
       setAiResponse(cleanedResponse);
     } catch (error: any) {
       console.error('Error uploading file:', error);

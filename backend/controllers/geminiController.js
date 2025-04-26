@@ -89,14 +89,7 @@ export const sendFileRequest = async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
-
         const file = req.file;
-        console.log('File details:', {
-            originalname: file.originalname,
-            mimetype: file.mimetype,
-            size: file.size,
-            extension: file.originalname.split('.').pop().toLowerCase()
-        });
 
         // For OGG files, ensure we're using a compatible MIME type
         let mimeType = file.mimetype;

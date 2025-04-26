@@ -10,15 +10,37 @@ const PORT = 3000;
 
 // aiPrompt();
 
+const allowedOrigins = [
+    'http://localhost:5173',  // Vite dev server
+    'http://localhost:4000',  // Docker frontend
+    process.env.FRONTEND_URL
+].filter(Boolean);  // Remove any undefined values
+
 app.use(cors({
-    origin: 'http://localhost:4000',
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
     credentials: true,
 }));
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api", geminiRouter);
 app.use("/api/auth", authRoutes);
+
 connectToDatabase();
+
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+});
 
 app.listen(PORT, () => {
     console.log(`app is running on port ${PORT}`);
