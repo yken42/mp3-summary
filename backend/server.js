@@ -5,16 +5,10 @@ import connectToDatabase from './db/connectdb.js';
 import cors from 'cors';
 import 'dotenv/config';
 import authRoutes from './routes/authRoutes.js';
-import { fileURLToPath } from 'url';
-import path from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// aiPrompt();
 
 const allowedOrigins = [
     'http://localhost:5173',  // Vite dev server
@@ -39,27 +33,7 @@ app.use(express.json());
 app.use("/api", geminiRouter);
 app.use("/api/auth", authRoutes);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ 
-        success: false,
-        message: 'Something broke!' 
-    });
-});
-
 connectToDatabase();
-
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-    // Serve static files from the React app
-    app.use(express.static(path.join(__dirname, '../client/dist')));
-    
-    // Handle React routing, return all requests to React app
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
-    });
-}
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
