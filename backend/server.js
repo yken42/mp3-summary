@@ -5,15 +5,16 @@ import connectToDatabase from './db/connectdb.js';
 import cors from 'cors';
 import 'dotenv/config';
 import authRoutes from './routes/authRoutes.js';
-import { fileURLToPath } from 'url';    
+import { fileURLToPath } from 'url';
 import path from 'path';
-const app = express();
-const PORT = 3000;
-
-// aiPrompt();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// aiPrompt();
 
 const allowedOrigins = [
     'http://localhost:5173',  // Vite dev server
@@ -51,9 +52,12 @@ connectToDatabase();
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, 'client', 'build')));
+    // Serve static files from the React app
+    app.use(express.static(path.join(__dirname, '../client/dist')));
+    
+    // Handle React routing, return all requests to React app
     app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+        res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
     });
 }
 
