@@ -5,6 +5,7 @@ import connectToDatabase from './db/connectdb.js';
 import cors from 'cors';
 import 'dotenv/config';
 import authRoutes from './routes/authRoutes.js';
+import { fileURLToPath } from 'url';
 import path from 'path';
 const app = express();
 const PORT = 3000;
@@ -35,6 +36,9 @@ app.use("/api", geminiRouter);
 app.use("/api/auth", authRoutes);
 
 connectToDatabase();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
