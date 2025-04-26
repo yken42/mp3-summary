@@ -5,11 +5,15 @@ import connectToDatabase from './db/connectdb.js';
 import cors from 'cors';
 import 'dotenv/config';
 import authRoutes from './routes/authRoutes.js';
+import { fileURLToPath } from 'url';    
 import path from 'path';
 const app = express();
 const PORT = 3000;
 
 // aiPrompt();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const allowedOrigins = [
     'http://localhost:5173',  // Vite dev server
