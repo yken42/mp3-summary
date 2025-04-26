@@ -5,7 +5,6 @@ import connectToDatabase from './db/connectdb.js';
 import cors from 'cors';
 import 'dotenv/config';
 import authRoutes from './routes/authRoutes.js';
-import { fileURLToPath } from 'url';
 import path from 'path';
 const app = express();
 const PORT = 3000;
@@ -35,17 +34,25 @@ app.use(express.json());
 app.use("/api", geminiRouter);
 app.use("/api/auth", authRoutes);
 
-connectToDatabase();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-app.use(express.static(path.join(__dirname, 'client/build')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ 
+        success: false,
+        message: 'Something broke!' 
+    });
 });
 
+connectToDatabase();
+
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'client', 'build')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+    });
+}
+
 app.listen(PORT, () => {
-    console.log(`app is running on port ${PORT}`);
-})
+    console.log(`Server is running on port ${PORT}`);
+});
