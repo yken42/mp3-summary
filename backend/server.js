@@ -5,6 +5,11 @@ import connectToDatabase from './db/connectdb.js';
 import cors from 'cors';
 import 'dotenv/config';
 import authRoutes from './routes/authRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,6 +39,11 @@ app.use("/api", geminiRouter);
 app.use("/api/auth", authRoutes);
 
 connectToDatabase();
+
+app.use(express.static(path.join(__dirname, 'client/build')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './client/build', 'index.html'));
+  });
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
