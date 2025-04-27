@@ -35,8 +35,8 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(express.json());
-app.use("/api", geminiRouter);
-app.use("/api/auth", authRoutes);
+// app.use("/api", geminiRouter);
+// app.use("/api/auth", authRoutes);
 
 connectToDatabase();
 
